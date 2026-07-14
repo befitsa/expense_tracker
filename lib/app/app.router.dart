@@ -100,11 +100,10 @@ class StackedRouter extends _i1.RouterBase {
       );
     },
     _i5.ExpenseDetailView: (data) {
-      final args = data.getArgs<ExpenseDetailViewArguments>(
-        orElse: () => const ExpenseDetailViewArguments(),
-      );
+      final args = data.getArgs<ExpenseDetailViewArguments>(nullOk: false);
       return _i8.MaterialPageRoute<dynamic>(
-        builder: (context) => _i5.ExpenseDetailView(key: args.key),
+        builder: (context) =>
+            _i5.ExpenseDetailView(key: args.key, expenseId: args.expenseId),
         settings: data,
       );
     },
@@ -113,7 +112,8 @@ class StackedRouter extends _i1.RouterBase {
         orElse: () => const ExpenseFormViewArguments(),
       );
       return _i8.MaterialPageRoute<dynamic>(
-        builder: (context) => _i6.ExpenseFormView(key: args.key),
+        builder: (context) =>
+            _i6.ExpenseFormView(key: args.key, expenseId: args.expenseId),
         settings: data,
       );
     },
@@ -202,46 +202,56 @@ class DashboardViewArguments {
 }
 
 class ExpenseDetailViewArguments {
-  const ExpenseDetailViewArguments({this.key});
+  const ExpenseDetailViewArguments({
+    this.key,
+    required this.expenseId,
+  });
 
   final _i8.Key? key;
 
+  final String expenseId;
+
   @override
   String toString() {
-    return '{"key": "$key"}';
+    return '{"key": "$key", "expenseId": "$expenseId"}';
   }
 
   @override
   bool operator ==(covariant ExpenseDetailViewArguments other) {
     if (identical(this, other)) return true;
-    return other.key == key;
+    return other.key == key && other.expenseId == expenseId;
   }
 
   @override
   int get hashCode {
-    return key.hashCode;
+    return key.hashCode ^ expenseId.hashCode;
   }
 }
 
 class ExpenseFormViewArguments {
-  const ExpenseFormViewArguments({this.key});
+  const ExpenseFormViewArguments({
+    this.key,
+    this.expenseId,
+  });
 
   final _i8.Key? key;
 
+  final String? expenseId;
+
   @override
   String toString() {
-    return '{"key": "$key"}';
+    return '{"key": "$key", "expenseId": "$expenseId"}';
   }
 
   @override
   bool operator ==(covariant ExpenseFormViewArguments other) {
     if (identical(this, other)) return true;
-    return other.key == key;
+    return other.key == key && other.expenseId == expenseId;
   }
 
   @override
   int get hashCode {
-    return key.hashCode;
+    return key.hashCode ^ expenseId.hashCode;
   }
 }
 
@@ -318,6 +328,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
 
   Future<dynamic> navigateToExpenseDetailView({
     _i8.Key? key,
+    required String expenseId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -325,7 +336,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.expenseDetailView,
-        arguments: ExpenseDetailViewArguments(key: key),
+        arguments: ExpenseDetailViewArguments(key: key, expenseId: expenseId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -334,6 +345,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
 
   Future<dynamic> navigateToExpenseFormView({
     _i8.Key? key,
+    String? expenseId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -341,7 +353,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.expenseFormView,
-        arguments: ExpenseFormViewArguments(key: key),
+        arguments: ExpenseFormViewArguments(key: key, expenseId: expenseId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -414,6 +426,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
 
   Future<dynamic> replaceWithExpenseDetailView({
     _i8.Key? key,
+    required String expenseId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -421,7 +434,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.expenseDetailView,
-        arguments: ExpenseDetailViewArguments(key: key),
+        arguments: ExpenseDetailViewArguments(key: key, expenseId: expenseId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -430,6 +443,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
 
   Future<dynamic> replaceWithExpenseFormView({
     _i8.Key? key,
+    String? expenseId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -437,7 +451,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.expenseFormView,
-        arguments: ExpenseFormViewArguments(key: key),
+        arguments: ExpenseFormViewArguments(key: key, expenseId: expenseId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

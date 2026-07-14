@@ -36,7 +36,7 @@ class MonthlySummaryCard extends StatelessWidget {
                   style: AppTextStyles.ktsAmountMedium,
                 ),
                 const SizedBox(height: UiHelpers.ksp4),
-                Text('Total this month', style: AppTextStyles.ktsBodySmall),
+                const Text('Total this month', style: AppTextStyles.ktsBodySmall),
               ],
             ),
           ),

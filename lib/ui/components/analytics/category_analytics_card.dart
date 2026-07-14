@@ -23,7 +23,7 @@ class CategoryAnalyticsCard extends StatelessWidget {
     return DashboardCard(
       title: AppStrings.ksDashboardCategoryBreakdown,
       child: total == 0
-          ? Text('No data yet', style: AppTextStyles.ktsBodySmall)
+          ? const Text('No data yet', style: AppTextStyles.ktsBodySmall)
           : Column(
               children: sortedEntries.map((entry) {
                 final category = CategoryConfig.kfGetCategory(entry.key);

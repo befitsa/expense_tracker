@@ -9,6 +9,7 @@ class AppColors {
   static const Color kcPrimaryDark = Color(0xFF3D3FC4);
   static const Color kcSecondary = Color(0xFF00C2A8);
   static const Color kcBackground = Color(0xFFF6F7FB);
+  static const Color kcBackground_2 = Color.fromARGB(35, 255, 227, 179);
   static const Color kcSurface = Color(0xFFFFFFFF);
   static const Color kcCardDark = Color(0xFF1E1F3B);
 
@@ -24,7 +25,7 @@ class AppColors {
   static const Color kcBorder = Color(0xFFE7E8F1);
   static const Color kcShadow = Color(0x1A1A1B2E);
 //default kc color
-  static Color kcDarkGreyColor = Color(0xFF1A1B1E);
+  static Color kcDarkGreyColor = const Color(0xFF1A1B1E);
   static const Color kcMediumGrey = Color(0xFF474A54);
   static const Color kcLightGrey = Color.fromARGB(255, 187, 187, 187);
   static const Color kcVeryLightGrey = Color(0xFFE3E3E3);

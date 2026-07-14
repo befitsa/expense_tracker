@@ -7,7 +7,6 @@ enum SortOption { newest, oldest, highest, lowest }
 class ExpenseService {
   final List<ExpenseModel> _kdExpenses = [];
 
-  // Seed data so the dashboard isn't empty on first run
   ExpenseService() {
     _seedData();
   }
@@ -47,28 +46,24 @@ class ExpenseService {
       ExpenseModel(
         id: '5',
         title: 'Shopping',
-        amount: 0,
+        amount: 200,
         category: CategoryConfig.ksShopping,
         date: now.subtract(const Duration(days: 7)),
       ),
     ]);
   }
 
-  // ==========================
-  // CRUD
-  // ==========================
-
   List<ExpenseModel> kfGetAllExpenses() {
     return List.unmodifiable(_kdExpenses);
   }
 
   ExpenseModel? kfGetExpenseById(String id) {
-    try {
-      return _kdExpenses.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
+    for (final e in _kdExpenses) {
+      if (e.id == id) return e;
     }
+    return null;
   }
+
 
   ExpenseModel kfAddExpense({
     required String title,
@@ -93,163 +88,107 @@ class ExpenseService {
   bool kfUpdateExpense(ExpenseModel updated) {
     final index = _kdExpenses.indexWhere((e) => e.id == updated.id);
 
-    if (index == -1) {
-      return false;
-    }
+    if (index == -1) return false;
 
     _kdExpenses[index] = updated;
     return true;
   }
 
   bool kfDeleteExpense(String id) {
-    final lengthBefore = _kdExpenses.length;
+  final before = _kdExpenses.length;
 
-    _kdExpenses.removeWhere((e) => e.id == id);
+  _kdExpenses.removeWhere((e) => e.id == id);
 
-    return _kdExpenses.length < lengthBefore;
-  }
-
-  // ==========================
-  // Aggregates
-  // ==========================
+  return _kdExpenses.length < before;
+}
 
   double kfGetTotalSpent() {
-    return _kdExpenses.fold(
-      0.0,
-      (sum, expense) => sum + expense.amount,
-    );
+    double total = 0;
+    for (final e in _kdExpenses) {
+      total += e.amount;
+    }
+    return total;
   }
 
   double kfGetTotalForCurrentMonth() {
     final now = DateTime.now();
+    double total = 0;
 
-    return _kdExpenses
-        .where(
-          (expense) => UiHelpers.kfIsSameMonth(
-            expense.date,
-            now,
-          ),
-        )
-        .fold(
-          0.0,
-          (sum, expense) => sum + expense.amount,
-        );
-  }
-
-  /// NEW METHOD ADDED
-  double kfGetTotalForLast7Days() {
-    final sevenDaysAgo = DateTime.now().subtract(
-      const Duration(days: 7),
-    );
-
-    return _kdExpenses
-        .where(
-          (expense) => expense.date.isAfter(
-            sevenDaysAgo,
-          ),
-        )
-        .fold(
-          0.0,
-          (sum, expense) => sum + expense.amount,
-        );
-  }
-
-  List<ExpenseModel> kfGetRecentExpenses({
-    int limit = 5,
-  }) {
-    final sorted = List<ExpenseModel>.from(_kdExpenses)
-      ..sort(
-        (a, b) => b.date.compareTo(a.date),
-      );
-
-    return sorted.take(limit).toList();
-  }
-
-  Map<String, double> kfGetCategoryBreakdown() {
-    final Map<String, double> breakdown = {};
-
-    for (final expense in _kdExpenses) {
-      breakdown[expense.category] =
-          (breakdown[expense.category] ?? 0) + expense.amount;
+    for (final e in _kdExpenses) {
+      if (UiHelpers.kfIsSameMonth(e.date, now)) {
+        total += e.amount;
+      }
     }
 
-    return breakdown;
+    return total;
   }
+
+  double kfGetTotalForLast7Days() {
+    final now = DateTime.now();
+    final last7 = now.subtract(const Duration(days: 7));
+
+    double total = 0;
+
+    for (final e in _kdExpenses) {
+      if (e.date.isAfter(last7)) {
+        total += e.amount;
+      }
+    }
+
+    return total;
+  }
+
+  List<ExpenseModel> kfGetRecentExpenses({int limit = 5}) {
+    final list = List<ExpenseModel>.from(_kdExpenses);
+    list.sort((a, b) => b.date.compareTo(a.date));
+    return list.take(limit).toList();
+  }
+
 
   Map<String, double> kfGetCategoryBreakdownForCurrentMonth() {
     final now = DateTime.now();
+    final Map<String, double> map = {};
 
-    final Map<String, double> breakdown = {};
-
-    for (final expense in _kdExpenses.where(
-      (e) => UiHelpers.kfIsSameMonth(
-        e.date,
-        now,
-      ),
-    )) {
-      breakdown[expense.category] =
-          (breakdown[expense.category] ?? 0) + expense.amount;
+    for (final e in _kdExpenses) {
+      if (UiHelpers.kfIsSameMonth(e.date, now)) {
+        map[e.category] = (map[e.category] ?? 0) + e.amount;
+      }
     }
 
-    return breakdown;
+    return map;
   }
 
-  // ==========================
-  // Search / Filter / Sort
-  // ==========================
 
   List<ExpenseModel> kfQueryExpenses({
     String? searchTerm,
     String? category,
     SortOption sort = SortOption.newest,
   }) {
-    List<ExpenseModel> result = List.from(
-      _kdExpenses,
-    );
+    List<ExpenseModel> result = List.from(_kdExpenses);
 
-    if (searchTerm != null && searchTerm.trim().isNotEmpty) {
+    if (searchTerm != null && searchTerm.isNotEmpty) {
       final term = searchTerm.toLowerCase();
-
-      result = result.where(
-        (expense) {
-          return expense.title.toLowerCase().contains(term);
-        },
-      ).toList();
+      result = result
+          .where((e) => e.title.toLowerCase().contains(term))
+          .toList();
     }
 
-    if (category != null &&
-        category != CategoryConfig.kdCategories.first.name &&
-        category.isNotEmpty) {
-      result = result.where(
-        (expense) {
-          return expense.category == category;
-        },
-      ).toList();
+    if (category != null && category.isNotEmpty) {
+      result = result.where((e) => e.category == category).toList();
     }
 
     switch (sort) {
       case SortOption.newest:
-        result.sort(
-          (a, b) => b.date.compareTo(a.date),
-        );
+        result.sort((a, b) => b.date.compareTo(a.date));
         break;
-
       case SortOption.oldest:
-        result.sort(
-          (a, b) => a.date.compareTo(b.date),
-        );
+        result.sort((a, b) => a.date.compareTo(b.date));
         break;
-
       case SortOption.highest:
-        result.sort(
-          (a, b) => b.amount.compareTo(a.amount),
-        );
+        result.sort((a, b) => b.amount.compareTo(a.amount));
         break;
-
       case SortOption.lowest:
-        result.sort(
-          (a, b) => a.amount.compareTo(b.amount),
-        );
+        result.sort((a, b) => a.amount.compareTo(b.amount));
         break;
     }
 

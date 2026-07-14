@@ -36,7 +36,7 @@ class GradientSummaryCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     AppStrings.ksDashboardGreeting,
                     style: AppTextStyles.ktsOnDarkMuted,
                   ),
@@ -61,7 +61,7 @@ class GradientSummaryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: UiHelpers.ksp24),
-          Text(
+          const Text(
             AppStrings.ksDashboardTotalBalance,
             style: AppTextStyles.ktsOnDarkMuted,
           ),

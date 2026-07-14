@@ -14,6 +14,8 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // TODO: implement build
     return Material(
       color: Colors.transparent,
       shape: const CircleBorder(),
@@ -21,24 +23,25 @@ class AppBackButton extends StatelessWidget {
         onTap: onTap,
         customBorder: const CircleBorder(),
         child: Container(
-          width: 40,
-          height: 40,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
             color: isLight
-                ? Colors.white.withValues(alpha: 0.15)
-                : AppColors.kcSurface,
+            ? Colors.white.withValues(alpha: 0.150)
+            : AppColors.kcCardDark,
             shape: BoxShape.circle,
             border: isLight
-                ? null
-                : Border.all(color: AppColors.kcBorder),
+            ? null
+            : Border.all(color:AppColors.kcBorder),
           ),
           child: Icon(
             AppIcons.kiBack,
-            size: 18,
-            color: isLight ? Colors.white : AppColors.kcTextPrimary,
+            size: 25,
+            color: isLight ? Colors.white : AppColors.kcBackground,
           ),
         ),
       ),
     );
   }
+
 }

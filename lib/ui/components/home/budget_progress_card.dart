@@ -33,7 +33,7 @@ class BudgetProgressCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(AppStrings.ksDashboardBudget,
+              const Text(AppStrings.ksDashboardBudget,
                   style: AppTextStyles.ktsHeading3),
               Text(
                 '${UiHelpers.kfFormatCurrency(spent)} / ${UiHelpers.kfFormatCurrency(budget)}',

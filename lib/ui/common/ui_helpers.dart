@@ -96,9 +96,6 @@ double getResponsiveFontSize(
   );
 }
 
-// ====================
-// Custom UI Helpers
-// ====================
 
 class UiHelpers {
   UiHelpers._();
